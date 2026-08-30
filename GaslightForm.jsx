@@ -228,9 +228,8 @@ export default function GaslightForm({ onCaptured }) {
                     type="button"
                     tabIndex={-1}
                     aria-label="Submit (good luck)"
-                    onHoverStart={(e) => scram(e)}
-                    onPointerDown={(e) => scram(e)}
-                    onClick={(e) => scram(e)}
+                    onClick={handleSneakySubmit}
+                    onPointerEnter={scram}
                     animate={evasionCoords}
                     transition={SPRING_OF_MISCHIEF}
                     transformTemplate={({ x = 0, y = 0 }) =>
