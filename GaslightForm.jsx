@@ -1,93 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-
-const EDGE_PAD = 12;
-const DECOY_SAMPLES = 14; 
-const HINT_AFTER = 4;
-const ARENA_H = 190;
-
-const SPRING_OF_MISCHIEF = {
-  type: 'spring',
-  stiffness: 760,
-  damping: 23,
-  mass: 0.55,
-};
-
-const TAUNTS = ['Submit', 'Nope', 'Missed me', 'Too slow', 'Warmer…', 'lol', 'Submit*'];
-const CONFETTI_TONES = ['#FFC107', '#FFD700', '#3A3A3A'];
-
 const looksLikeEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
-const between = (lo, hi) => lo + Math.random() * (hi - lo);
 
 export default function GaslightForm({ onCaptured }) {
   const [draft, setDraft] = useState({ name: '', email: '' });
-  const [evasionCoords, setEvasionCoords] = useState({ x: 0, y: 0 });
-  const [dodgeTally, setDodgeTally] = useState(0);
-  const [flaw, setFlaw] = useState(null); 
+  const [flaw, setFlaw] = useState(null);
   const [busted, setBusted] = useState(false);
 
-  const arenaRef = useRef(null);
-  const dodgerRef = useRef(null);
-
-  
-  const plotEscapeRoute = useCallback((pointerX, pointerY) => {
-    const arena = arenaRef.current;
-    const dodger = dodgerRef.current;
-    if (!arena || !dodger) return { x: 0, y: 0 };
-
-    const box = arena.getBoundingClientRect();
-    
-    const reachX = Math.max(0, box.width / 2 - dodger.offsetWidth / 2 - EDGE_PAD);
-    const reachY = Math.max(0, box.height / 2 - dodger.offsetHeight / 2 - EDGE_PAD);
-    const homeX = box.left + box.width / 2;
-    const homeY = box.top + box.height / 2;
-
-    let winner = { x: 0, y: 0 };
-    let bestGap = -1;
-    for (let i = 0; i < DECOY_SAMPLES; i += 1) {
-      const spot = { x: between(-reachX, reachX), y: between(-reachY, reachY) };
-      const gap = Math.hypot(homeX + spot.x - pointerX, homeY + spot.y - pointerY);
-      if (gap > bestGap) {
-        bestGap = gap;
-        winner = spot;
-      }
-    }
-    return winner;
-  }, []);
-
-  const scram = useCallback(
-    (event) => {
-      if (busted) return;
-      const px = event?.clientX ?? window.innerWidth / 2;
-      const py = event?.clientY ?? window.innerHeight / 2;
-      setEvasionCoords(plotEscapeRoute(px, py));
-      setDodgeTally((n) => n + 1);
-    },
-    [busted, plotEscapeRoute],
-  );
-
-  
-  useEffect(() => {
-    const arena = arenaRef.current;
-    if (!arena || typeof ResizeObserver === 'undefined') return undefined;
-
-    const observer = new ResizeObserver(() => {
-      const dodger = dodgerRef.current;
-      if (!dodger) return;
-      const reachX = Math.max(0, arena.clientWidth / 2 - dodger.offsetWidth / 2 - EDGE_PAD);
-      const reachY = Math.max(0, arena.clientHeight / 2 - dodger.offsetHeight / 2 - EDGE_PAD);
-      setEvasionCoords((prev) => ({
-        x: Math.min(reachX, Math.max(-reachX, prev.x)),
-        y: Math.min(reachY, Math.max(-reachY, prev.y)),
-      }));
-    });
-    observer.observe(arena);
-    return () => observer.disconnect();
-  }, []);
-
-  const handleSneakySubmit = useCallback(() => {
-    if (busted) return;
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     if (!draft.name.trim()) {
       setFlaw({ field: 'name', msg: 'A name would help.', nonce: Math.random() });
@@ -98,20 +20,9 @@ export default function GaslightForm({ onCaptured }) {
       return;
     }
 
-    console.log(
-      '%c⌨️ The Enter key. Really? I wired up a whole physics engine and you brute-forced the form. Respect.',
-      'color:#1F1F1F;background:#FFC107;padding:6px 12px;border-radius:6px;font-weight:600',
-    );
-
     setFlaw(null);
     setBusted(true);
-    onCaptured?.(draft);
-  }, [busted, draft, onCaptured]);
-
-  const onFieldKeyDown = (event) => {
-    if (event.key !== 'Enter') return;
-    event.preventDefault();
-    handleSneakySubmit();
+    if (onCaptured) onCaptured(draft);
   };
 
   const editField = (field) => (event) => {
@@ -122,8 +33,6 @@ export default function GaslightForm({ onCaptured }) {
   const runItBack = () => {
     setBusted(false);
     setDraft({ name: '', email: '' });
-    setEvasionCoords({ x: 0, y: 0 });
-    setDodgeTally(0);
     setFlaw(null);
   };
 
@@ -140,7 +49,6 @@ export default function GaslightForm({ onCaptured }) {
               transition={{ type: 'spring', stiffness: 340, damping: 26 }}
               className="relative overflow-visible rounded-3xl border border-[#F0F0F0] bg-[#FFFFFF] px-9 py-14 text-center shadow-[0_24px_70px_-32px_rgba(31,31,31,0.28)]"
             >
-              <ConfettiBurst />
               <motion.div
                 initial={{ rotate: -14, scale: 0.5 }}
                 animate={{ rotate: 0, scale: 1 }}
@@ -153,9 +61,7 @@ export default function GaslightForm({ onCaptured }) {
                 You outsmarted me.
               </h2>
               <p className="mx-auto mt-3 max-w-[300px] text-[15px] leading-relaxed text-[#7A7A7A]">
-                Filed under <span className="font-medium text-[#2B2B2B]">{draft.email}</span> after{' '}
-                {dodgeTally} failed {dodgeTally === 1 ? 'attempt' : 'attempts'}. The button is
-                sulking.
+                Filed under <span className="font-medium text-[#2B2B2B]">{draft.email}</span> successfully.
               </p>
               <button
                 type="button"
@@ -183,24 +89,16 @@ export default function GaslightForm({ onCaptured }) {
                 Join the waitlist
               </h1>
               <p className="mt-2.5 text-[15px] leading-relaxed text-[#8A8A8A]">
-                Two fields, one button. Should take about nine seconds.
+                Two fields, one button. Ready when you are.
               </p>
 
-              <form
-                className="mt-8 space-y-5"
-                noValidate
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSneakySubmit();
-                }}
-              >
+              <form className="mt-8 space-y-5" noValidate onSubmit={handleSubmit}>
                 <Field
                   id="gf-name"
                   label="Full name"
                   placeholder="Ada Lovelace"
                   value={draft.name}
                   onChange={editField('name')}
-                  onKeyDown={onFieldKeyDown}
                   flaw={flaw?.field === 'name' ? flaw : null}
                 />
                 <Field
@@ -210,57 +108,16 @@ export default function GaslightForm({ onCaptured }) {
                   placeholder="ada@enginehouse.io"
                   value={draft.email}
                   onChange={editField('email')}
-                  onKeyDown={onFieldKeyDown}
                   flaw={flaw?.field === 'email' ? flaw : null}
                 />
 
-                <div
-                  ref={arenaRef}
-                  style={{ height: ARENA_H }}
-                  className="relative mt-2 overflow-hidden rounded-2xl border border-dashed border-[#FFE9A8] bg-[#FFFDF5]"
+                <button
+                  type="submit"
+                  className="w-full rounded-xl bg-[#FFC107] px-7 py-3.5 text-[15px] font-semibold tracking-[-0.01em] text-[#1F1F1F] shadow-[0_10px_26px_-8px_rgba(255,193,7,0.95)] outline-none hover:opacity-90 transition-opacity"
                 >
-                  <span className="pointer-events-none absolute left-4 top-3.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DCC682]">
-                    Click zone
-                  </span>
-
-                  <motion.button
-                    ref={dodgerRef}
-                    type="button"
-                    tabIndex={-1}
-                    aria-label="Submit (good luck)"
-                    onClick={handleSneakySubmit}
-                    onPointerEnter={scram}
-                    animate={evasionCoords}
-                    transition={SPRING_OF_MISCHIEF}
-                    transformTemplate={({ x = 0, y = 0 }) =>
-                      `translate(-50%, -50%) translate(${x}, ${y})`
-                    }
-                    whileTap={{ scale: 0.94 }}
-                    className="absolute left-1/2 top-1/2 select-none whitespace-nowrap rounded-xl bg-[#FFC107] px-7 py-3 text-[15px] font-semibold tracking-[-0.01em] text-[#1F1F1F] shadow-[0_10px_26px_-8px_rgba(255,193,7,0.95)] outline-none"
-                  >
-                    {TAUNTS[Math.min(dodgeTally, TAUNTS.length - 1)]}
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {dodgeTally >= HINT_AFTER && (
-                      <motion.p
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.35 }}
-                        className="pointer-events-none absolute inset-x-0 bottom-3.5 text-center text-[12px] font-medium text-[#C8A94A]"
-                      >
-                        psst — the <kbd className="font-sans font-semibold">Enter</kbd> key still
-                        works in the fields above
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </div>
+                  Submit application
+                </button>
               </form>
-
-              <p className="mt-6 text-center text-[12px] leading-relaxed text-[#B4B4B4]">
-                By submitting you agree to be mildly inconvenienced.
-              </p>
             </motion.section>
           )}
         </AnimatePresence>
@@ -304,61 +161,6 @@ function Field({ id, label, flaw, ...rest }) {
           </motion.p>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-function ConfettiBurst() {
-  
-  const [flecks] = useState(() =>
-    Array.from({ length: 30 }, (_, i) => {
-      const angle = (i / 30) * Math.PI * 2 + between(-0.2, 0.2);
-      const reach = between(95, 215);
-      return {
-        id: i,
-        dx: Math.cos(angle) * reach,
-        dy: Math.sin(angle) * reach - 45, 
-        spin: between(-680, 680),
-        delay: between(0, 0.09),
-        tone: CONFETTI_TONES[i % CONFETTI_TONES.length],
-        w: between(5, 9),
-        h: between(9, 15),
-      };
-    }),
-  );
-
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-visible">
-      {flecks.map((f) => (
-        <motion.span
-          key={f.id}
-          initial={{ x: 0, y: 0, opacity: 0, scale: 0.4 }}
-          animate={{
-            x: f.dx,
-            y: [0, f.dy, f.dy + 190],
-            rotate: f.spin,
-            opacity: [1, 1, 0],
-            scale: [0.6, 1, 0.85],
-          }}
-          transition={{
-            duration: 1.35,
-            delay: f.delay,
-            ease: 'easeOut',
-            y: { times: [0, 0.34, 1], ease: ['easeOut', 'easeIn'] },
-            opacity: { times: [0, 0.62, 1] },
-            scale: { times: [0, 0.3, 1] },
-          }}
-          style={{
-            width: f.w,
-            height: f.h,
-            background: f.tone,
-            borderRadius: 2,
-            position: 'absolute',
-            left: '50%',
-            top: '38%',
-          }}
-        />
-      ))}
     </div>
   );
 }
