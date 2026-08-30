@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TDS X Web Development Team</title>
+
+
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="stage">
+
+
+  <section class="portal" id="arena">
+    <header class="crest">
+      <span class="seal" aria-hidden="true">EC</span>
+      <p class="eyebrow">TDS X Web Development Team</p>
+    </header>
+
+    <h1 class="headline">Prove you belong here.</h1>
+    <p class="deck">Made by Shubham</p>
+
+    <form class="intake" id="intakeForm" autocomplete="off">
+      <div class="field">
+        <label class="label" for="name">Full name</label>
+        <input class="input" id="name" name="name" type="text"
+               placeholder="" maxlength="60" required />
+      </div>
+
+      <div class="field">
+        <label class="label" for="roll">Roll number</label>
+        <input class="input" id="roll" name="roll" type="text"
+               placeholder="" pattern="[A-Za-z0-9]{4,12}"
+               title="4–12 letters or digits" required />
+      </div>
+    
+      <button class="sneaky-btn" id="sneakyBtn" type="submit"
+              tabindex="-1" aria-label="Submit application">
+        <span class="btn-face" id="btnFace">Submit application</span>
+      </button>
+    </form>
+
+    <footer class="log" id="log" aria-live="polite">
+      <span class="log-dot" aria-hidden="true"></span>
+      <span class="log-text" id="logText">Standing by.</span>
+      <span class="log-count" id="logCount">dodges 00</span>
+    </footer>
+  </section>
+
+
+  <section class="cleared" id="cleared" hidden>
+    <svg class="tick" viewBox="0 0 52 52" aria-hidden="true">
+      <circle class="tick-ring" cx="26" cy="26" r="23" />
+      <path class="tick-path" d="M15.5 27 L22.5 34 L37 19" />
+    </svg>
+
+    <h2 class="cleared-title">Congratulations! You passed the first filter.</h2>
+    <p class="cleared-deck" id="clearedDeck">Application received.</p>
+
+    <dl class="receipt">
+      <div><dt>Candidate</dt><dd id="rCandidate">—</dd></div>
+      <div><dt>Clearance</dt><dd id="rCode">—</dd></div>
+    </dl>
+
+    <button class="ghost-btn" id="resetBtn" type="button">Run it back</button>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
