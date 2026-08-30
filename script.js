@@ -10,8 +10,8 @@ const logCount  = document.getElementById('logCount');
 const cleared   = document.getElementById('cleared');
 const resetBtn  = document.getElementById('resetBtn');
 
-const EDGE_PAD  = 14;   
-const NEAR_MISS = 48;   
+const EDGE_PAD  = 0;   
+const NEAR_MISS = 0;   
 const SAMPLES   = 16;  
 
 let trapArmed        = false;          
