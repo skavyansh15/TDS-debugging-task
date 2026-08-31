@@ -1,0 +1,175 @@
+body {
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color:#e5e9cb;
+    display:flex;
+    justify-content:center;
+    padding-top: 50px;
+    margin: 0;
+
+}
+.container{
+    background-color:white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 350px;
+    box-shadow:
+    8px 8px 16px #bbc57cf8,
+    -8px -8px 16px #d5d8c0;
+    text-align:center;
+}
+
+h1{
+    color:#646e2f;
+    margin-top: 10px;
+    margin-bottom:5px;
+}
+
+h3{
+    color:#878f5f;
+    font-size: 14px;
+}
+.input-area{
+    display: flex;
+    gap:8px;
+    width: 350px;
+}
+#taskInput{
+    padding: 10px;
+    text-align: center;
+    gap:3px;
+    width: 260px;
+    height: 20px;
+    background-color: white;
+    border-radius: 20px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgba(180, 197, 124, 0.35);
+    box-shadow:
+        inset -8px -8px 8px rgb(228, 235, 214);
+}
+#taskInput:hover{
+    background-color: rgb(242, 250, 245);
+}
+#addBtn{
+    background-color: hsl(214, 58%, 63%);
+    border-radius: 40px;
+    border:none;
+    border-color:#3b5980;
+    width: 85px;
+    height:40px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    color:white;
+    cursor:pointer;
+    box-shadow: 
+    2px 2px 5px #3d6a9e,
+    -4px -4px 8px #eaf2ff,
+    inset -4px -4px 10px #406da3;
+}
+
+#addBtn:active {
+  box-shadow:
+    inset 4px 4px 8px #2c4d75,
+    inset -4px -4px 8px #a9c9ec;
+}
+
+#addBtn:hover{
+    background-color: #4f88d2;
+}
+
+ul{
+    list-style: none;
+    padding:0;
+    text-align: left;
+}
+
+li{
+      background-color: #f9f9f9;
+      margin-bottom: 8px;
+      padding: 10px;
+      border-radius: 50px;
+      height:25px;
+      display: flex;
+     justify-content: space-between;
+     align-items: center;
+     box-shadow:
+        3px 3px 6px #d8e8dd,
+        -3px -3px 6px #ffffff,
+        inset -4px -4px 6px #c5cec8;
+}   
+li.done{
+    background-color: #e3f7e9;
+}
+li.done span{
+    text-decoration: line-through;
+    color: #2e9e5b;
+
+}
+li span{
+    cursor: pointer;
+    flex: 1;
+}
+li:hover{
+    background-color: rgb(232, 232, 232);
+}
+
+.deletebtn{
+    background-color: rgb(239, 79, 79);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 8px;
+    margin-right: 5px;
+    box-shadow:
+        
+        inset -2px -2px 4px #a95252;
+}
+
+.deletebtn:hover{
+    background-color: rgb(196, 62, 62);
+}
+
+
+p{
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 13px;
+    font-style: italic;
+    font-weight: lighter;
+    color:#5d5c5c;
+    opacity:0.95;
+
+}
+
+#emptylistmsg{
+    color: #aaa;
+    font-size: 13px;
+}
+#counter{
+
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-style:normal;
+    font-size:medium;
+    font-weight: 500;
+    color:#2e9e5b;
+}
+#clrbtn{
+    border-radius: 20px;
+    background-color: rgb(149, 226, 149);
+    height: 30px;
+    color: black;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif  ;
+    position: center;
+    box-shadow:
+        2px 2px 5px #7cc59a,
+        -2px -2px 5px #ffffff,
+        inset -4px -6px 4px #6bb789;
+    border-width: 1px;
+}
+
+#clrbtn:hover{
+    background-color:rgb(134, 203, 134) ;
+}
